@@ -1,6 +1,6 @@
 // #############################################################################
 // ### Library for LCD based on Hitachi HD44780                              ###
-// ### https://github.com/Strooom                                            ###
+// ### https://github.com/Strooom/HD44780                                    ###
 // ### Author(s) : Pascal Roobrouck - @strooom                               ###
 // ### License : https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode ###
 // #############################################################################
