@@ -10,7 +10,7 @@
 HD44780::HD44780(displayType theDisplayType, uint8_t I2CAddress) : theDisplayType(theDisplayType), I2CAddress(I2CAddress)		// Constructor
     {
     Wire.begin();											// Initialize I2C interface
-    backLight = false;										// disable backLight by default
+    backLight = true;										// disable backLight by default
     cols = ((uint16_t)theDisplayType & 0xFF00) >> 8;		// nmbr of cols (chars) per line - horizontal
     rows = ((uint16_t)theDisplayType & 0x00FF);				// nmbr of lines - vertical
     chars = rows * cols;
@@ -40,11 +40,11 @@ void HD44780::initialize()
     delay(2);
     }
 
-void HD44780::clear()
+void HD44780::clear(uint8_t theChar = 0x20)
     {
     for (uint8_t i = 0; i < chars; i++)
         {
-        displayData[i] = 0x20;			// set all displayData bytes to a 'space'
+        displayData[i] = theChar;			// set all displayData bytes to certain char, default is a 'space'
         }
     }
 
@@ -73,12 +73,12 @@ void HD44780::refresh()
     switch (theDisplayType)
         {
         case displayType::Type16X1:
-            writeByteLCD((uint8_t) HD44780Instruction::DDRAMaddressSet | 0x00, 0); ;
+            writeByteLCD((uint8_t) HD44780Instruction::DDRAMaddressSet | 0x00, 0);
             for (uint8_t i = 0; i < 8; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
                 }
-            writeByteLCD((uint8_t) HD44780Instruction::DDRAMaddressSet | 0x40, 0); ;
+            writeByteLCD((uint8_t) HD44780Instruction::DDRAMaddressSet | 0x40, 0);
             for (uint8_t i = 8; i < 16; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
@@ -86,12 +86,12 @@ void HD44780::refresh()
             break;
 
         case displayType::Type16X2:
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x00, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x00, 0);
             for (uint8_t i = 0; i < 16; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
                 }
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x40, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x40, 0);
             for (uint8_t i = 16; i < 32; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
@@ -99,22 +99,22 @@ void HD44780::refresh()
             break;
 
         case displayType::Type16X4:
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x00, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x00, 0);
             for (uint8_t i = 0; i < 16; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
                 }
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x40, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x40, 0);
             for (uint8_t i = 16; i < 32; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
                 }
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x14, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x14, 0);
             for (uint8_t i = 32; i < 48; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
                 }
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x54, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x54, 0);
             for (uint8_t i = 48; i < 64; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
@@ -122,12 +122,12 @@ void HD44780::refresh()
             break;
 
         case displayType::Type20X2:
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x00, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x00, 0);
             for (uint8_t i = 0; i < 20; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
                 }
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x40, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x40, 0);
             for (uint8_t i = 20; i < 40; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
@@ -135,22 +135,22 @@ void HD44780::refresh()
             break;
 
         case displayType::Type20X4:
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x00, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x00, 0);
             for (uint8_t i = 0; i < 20; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
                 }
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x40, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x40, 0);
             for (uint8_t i = 20; i < 40; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
                 }
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x14, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x14, 0);
             for (uint8_t i = 40; i < 60; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
                 }
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x54, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x54, 0);
             for (uint8_t i = 60; i < 80; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
@@ -158,12 +158,12 @@ void HD44780::refresh()
             break;
 
         case displayType::Type40X2:
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x00, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x00, 0);
             for (uint8_t i = 0; i < 40; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
                 }
-            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x40, 0); ;
+            writeByteLCD((uint8_t)HD44780Instruction::DDRAMaddressSet | 0x40, 0);
             for (uint8_t i = 40; i < 80; ++i)
                 {
                 writeByteLCD(displayData[i], 1);
@@ -215,3 +215,17 @@ void HD44780::writeByteLCD(uint8_t iData, boolean commandData)
     // All this can be done in 1 I2C transmission of 6 bytes
     }
 
+void HD44780::setCGRam(uint8_t* CGData, uint8_t index)
+    {
+    writeByteLCD((uint8_t) HD44780Instruction::CGRAMaddressSet | (index << 3), 0); ;
+    for (uint8_t i = 0; i < 8; ++i)
+        {
+        writeByteLCD(CGData[i], 1);
+        }
+    }
+
+
+displayType HD44780::getDisplayType()
+    {
+    return theDisplayType;
+    }

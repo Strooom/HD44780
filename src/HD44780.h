@@ -118,10 +118,12 @@ class HD44780
     public:
         HD44780(displayType theDisplayType, uint8_t I2CAddress);		// Constructor for specific displayType at specific I2C address
         ~HD44780();														// Destructor
+		displayType getDisplayType();									// reads the type of display
         void initialize();												// Initialize the display
-        void clear();													// clear the complete displayData MCU RAM
+        void clear(uint8_t theChar = 0x20);								// clear the complete displayData MCU RAM
         void refresh();													// sends all MCU displayData to the display
         void print(char* string, uint8_t row, uint8_t col);				// copies the string into the displayData - needs a call to refresh() to actually transfer it to the display
+		void setCGRam(uint8_t* CGData, uint8_t index);					// sets the LCD CGRam data at index (0..7) from raw CGData array
 
     private:
         void writeNibbleLCD(uint8_t iData, boolean commandData);
