@@ -1,8 +1,9 @@
 // #############################################################################
 // ### Library for LCD based on Hitachi HD44780                              ###
-// ### https://github.com/Strooom                                            ###
+// ### https://github.com/Strooom/HD44780                                    ###
 // ### Author(s) : Pascal Roobrouck - @strooom                               ###
 // ### License : https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode ###
+// ### June 2018                                                             ###
 // #############################################################################
 
 #ifndef HD44780_h
@@ -15,7 +16,7 @@
 #define RW 0x02						// LCD ReadWrite is on I2C bit 1
 #define E  0x04						// LCD Enable (E) is on I2C bit 2
 #define BL 0x08						// LCD backlight is on I2C bit 3
-									// The LCD 4-bit Databus (D4-D7) is on I2C bits 4 - 7
+// The LCD 4-bit Databus (D4-D7) is on I2C bits 4 - 7
 
 enum class displayType : uint16_t	// Enumeration of possible types. MSByte is nmbr of colums / charsPerLine, LSByte is nmbr of lines
     {
@@ -107,27 +108,27 @@ enum class HD44780FunctionSetFont : uint8_t
 class HD44780
     {
     private:
-        displayType theDisplayType;										// type of the display, in rows * chars
-        uint8_t I2CAddress;												// I2C address of the display
-        uint8_t* displayData;											// pointer to dynamic storage which holds a copy of the data to be shown on the display
-        boolean backLight;												// is the backLight on/off
-        uint8_t cols;													// how many cols - chars on one line
-        uint8_t rows;													// how many rows = lines no the display
-        uint8_t chars;													// how many chars in total
+        displayType theDisplayType;											// type of the display, in rows * chars
+        uint8_t I2CAddress;													// I2C address of the display
+        uint8_t* displayData;												// pointer to dynamic storage which holds a copy of the data to be shown on the display
+        boolean backLight;													// is the backLight on/off
+        uint8_t cols;														// how many cols - chars on one line
+        uint8_t rows;														// how many rows = lines no the display
+        uint8_t chars;														// how many chars in total
 
     public:
-        HD44780(displayType theDisplayType, uint8_t I2CAddress);		// Constructor for specific displayType at specific I2C address
-        ~HD44780();														// Destructor
-		displayType getDisplayType();									// reads the type of display
-        void initialize();												// Initialize the display
-        void clear(uint8_t theChar = 0x20);								// clear the complete displayData MCU RAM
-        void refresh();													// sends all MCU displayData to the display
-        void print(char* string, uint8_t row, uint8_t col);				// copies the string into the displayData - needs a call to refresh() to actually transfer it to the display
-		void setCGRam(uint8_t* CGData, uint8_t index);					// sets the LCD CGRam data at index (0..7) from raw CGData array
+        HD44780(displayType theDisplayType, uint8_t I2CAddress);			// Constructor for specific displayType at specific I2C address
+        ~HD44780();															// Destructor
+        void initialize();													// Initialize the display
+        void clear(uint8_t theChar = 0x20);									// clear the complete displayData MCU RAM
+        void refresh();														// sends all MCU displayData to the display
+        void print(char* string, uint8_t row, uint8_t col);					// copies the string into the displayData - needs a call to refresh() to actually transfer it to the display
+        void write(char* data, uint8_t length, uint8_t row, uint8_t col);	// copies an array (could contain 0x00) of length to the displayData
+        void setCGRam(const char* CGData, uint8_t index);					// sets the LCD CGRam data at index (0..7) from raw CGData array
 
     private:
-        void writeNibbleLCD(uint8_t iData, boolean commandData);
-        void writeByteLCD(uint8_t iData, boolean commandData);
+        void writeNibbleLCD(uint8_t iData, boolean commandData);			// private helper function to write 4 bits to the LCD
+        void writeByteLCD(uint8_t iData, boolean commandData);				// private helper function to write 8 bits to the LCD
     };
 
 #endif
